@@ -1,5 +1,6 @@
 require 'highline'
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib hitch options]))
+require 'yaml'
 
 module Hitch
 
@@ -134,11 +135,13 @@ module Hitch
   end
 
   def group_prefix
-    personal_info['group_email'].split('@').first
+    group_email = personal_info['group_email']
+    group_email.split('@').first if group_email
   end
 
   def group_domain
-    personal_info['group_email'].split('@').last
+    group_email = personal_info['group_email']
+    group_email.split('@').last if group_email
   end
 
   def clean_hitch_authors
@@ -273,7 +276,7 @@ module Hitch
         write_hitchrc
       end
     rescue EOFError  # HighLine throws this if @input.eof?
-      break
+      raise 'Missing .hitchrc file'
     end
 
     print_current_status
